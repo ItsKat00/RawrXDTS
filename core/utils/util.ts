@@ -22,7 +22,7 @@ function getHex(num: number): string {
 	return hex;
 }
 
-export function getMessageEmbed(title: string, description: string = 'LAZY DEV HAHA', footer: string): MessageEmbed {
+export function getMessageEmbed(title: string, description: string = 'LAZY DEV HAHA', footer?: string): MessageEmbed {
     return new MessageEmbed()
         .setTitle(title)
         .setColor(getRandColor())
@@ -110,5 +110,5 @@ export function getTimeAndDate(use12h: boolean = true): string {
     }
     let minString: string = minutes < 10 ? '0'+minutes : minutes.toString();
     let secString: string = seconds < 10 ? '0'+seconds : seconds.toString();
-    return hours+':'+minString+':'+secString+meridiemIndicator+' '+dateFull;
+    return dateFull+' '+hours+':'+minString+':'+secString+meridiemIndicator;
 }

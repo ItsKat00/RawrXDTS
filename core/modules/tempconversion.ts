@@ -1,6 +1,6 @@
 import { Message } from 'discord.js';
-import { thisBot } from '..';
-import { getMessageEmbed } from '../utils/util';
+import { thisBot } from "../index";
+import { getMessageEmbed, makeCommand } from '../utils/util';
 
 // >:D
 interface ConversionList {
@@ -39,6 +39,9 @@ function convert(message: Message, args: string[], options: string[]) {
 		return;
 	}
 		
-	const resultTemp = startUnit == resultUnit ? startTemp : conversions[startUnit + resultUnit](startTemp);
-	message.channel.send(getMessageEmbed('Conversion from ' + startUnit + ' to ' + resultUnit + ':', startTemp + '\u00B0' + startUnit + ' -> ' + resultTemp + '\u00B0' + resultUnit, ''));
+    const resultTemp: number = startUnit == resultUnit ? startTemp : conversions[startUnit + resultUnit](startTemp);
+    let newResultTemp: string = resultTemp.toFixed(2)
+	message.channel.send(getMessageEmbed('Conversion from ' + startUnit + ' to ' + resultUnit + ':', startTemp + '\u00B0' + startUnit + ' -> ' + newResultTemp + '\u00B0' + resultUnit, ''));
 }
+
+export const cmd = makeCommand('conv', 'Converts the temperature to your desired unit.', '', [], convert, false)

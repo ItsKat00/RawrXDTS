@@ -5,22 +5,31 @@ export const dClient = client;
 import {readJSON} from './utils/util';
 //import {initConnection} from './utils/db';
 import {config} from './config';
+export const thisBot: BotConfig = config.bots.test;
+import { log } from './utils/logger';
+import {checkCommand} from './main';
 
+export interface BotConfig {
+    apiKey: string;
+    prefix: string;
+    inviteURL: string;
+}
+
+// Change which bot this is on the line below.
 // log in
 // I placed this down here, vs in my js codebase because importing modules takes a while, where as 
 // logging in doesn't...
-console.log('Logging in...');
-client.login(config.bots.test.apiKey)
-    .then(() => console.log('Logged in!'))
-    .catch(e => console.log(e));
+log('Logging in...', 'core');
+client.login(thisBot.apiKey)
+    .then(() => log('Logged in!', 'core'))
+    .catch(e => log(e, 'core', 'error'));
 client.on('ready', () => {
     client.user?.setActivity('for &help', {'type': 'WATCHING'}) // revisit this line
-        .catch(e => console.log('Error setting activity: '+e));
-    onLogin().then(() => console.log('Ready!'));
+        .catch(e => log('Error setting activity: '+e, 'core', 'error'));
+    onLogin().then(() => log('Ready!', 'core'));
 })
 
 // add them event listeners and start loading modules.
-import {checkCommand} from './main';
 client.on('message', checkCommand);
 //import {newMember} from './utils/db';
 //client.on('guildMemberAdd', member => newMember(member))
@@ -39,7 +48,7 @@ async function onLogin(){
         ids = readJSON('./resmsg.json') as RestartData;
     }
     catch{
-        console.log('resmgs.json not found ya doofus.');
+        log('resmgs.json not found ya doofus.', 'core', 'warning');
         return;
     }
     const guild: Guild | null = client.guilds.resolve(ids.guild);
@@ -49,27 +58,24 @@ async function onLogin(){
             if (channel){
                 const msg: Message = await channel.messages.fetch(ids.messageID);
                 if (msg){
-                    msg.react('😄').catch(e => console.log(e))
+                    msg.react('😄').catch(e => log(e, 'core', 'error'))
                     if (ids.userID != config.botAdmins.owner)
                         msg.channel.send('you can\'t drown me bitch');
                 }
                 else
-                    console.log('message not found in channel: '+channel.name);
+                    log('message not found in channel: '+channel.name, 'core', 'warning');
             }
             else
-                console.log('channel not found in guild: '+guild.name);
+                log('channel not found in guild: '+guild.name, 'core', 'warning');
         }
         if (!guild.available){
-            console.log('guild not available, waiting...');
+            log('guild not available, waiting...', 'core', 'warning');
             setTimeout(func, 1000);
         }
         else
             await func();
     }
     else{
-        console.log('guild not found!\n'+JSON.stringify(ids));
+        log('guild not found!\n'+JSON.stringify(ids), 'core', 'error');
     }
 }
-
-
-// nice
