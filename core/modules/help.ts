@@ -1,7 +1,6 @@
 import { Message } from 'discord.js';
 import { getMessageEmbed, makeCommand } from '../utils/util';
 import { cmds } from '../main'
-import { log } from '../utils/logger';
 function help(message:Message, args: string[], options: string[]) {
     if (args.length > 0){
         const cmd = cmds.find(cmd => cmd.name == args[0].toLowerCase());
