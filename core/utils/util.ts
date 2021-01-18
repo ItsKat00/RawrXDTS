@@ -22,7 +22,7 @@ function getHex(num: number): string {
 	return hex;
 }
 
-export function getMessageEmbed(title: string, description: string = 'LAZY DEV HAHA', footer?: string): MessageEmbed {
+export function getMessageEmbed(title: string, description: string = 'LAZY DEV HAHA', footer: string = ''): MessageEmbed {
     return new MessageEmbed()
         .setTitle(title)
         .setColor(getRandColor())

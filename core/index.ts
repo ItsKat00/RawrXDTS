@@ -6,9 +6,9 @@ import {readJSON} from './utils/util';
 //import {initConnection} from './utils/db';
 import {config} from './config';
 export const thisBot: BotConfig = config.bots.test;
-import { log } from './utils/logger';
+import { Logger } from './utils/logger';
 import {checkCommand} from './main';
-
+const logger = new Logger('core')
 export interface BotConfig {
     apiKey: string;
     prefix: string;
@@ -19,14 +19,14 @@ export interface BotConfig {
 // log in
 // I placed this down here, vs in my js codebase because importing modules takes a while, where as 
 // logging in doesn't...
-log('Logging in...', 'core');
+logger.log('Logging in...');
 client.login(thisBot.apiKey)
-    .then(() => log('Logged in!', 'core'))
-    .catch(e => log(e, 'core', 'error'));
+    .then(() => logger.log('Logged in!'))
+    .catch(e => logger.log(e, 'error'));
 client.on('ready', () => {
     client.user?.setActivity('for &help', {'type': 'WATCHING'}) // revisit this line
-        .catch(e => log('Error setting activity: '+e, 'core', 'error'));
-    onLogin().then(() => log('Ready!', 'core'));
+        .catch(e => logger.log('Error setting activity: '+e, 'error'));
+    onLogin().then(() => logger.log('Ready!'));
 })
 
 // add them event listeners and start loading modules.
@@ -48,7 +48,7 @@ async function onLogin(){
         ids = readJSON('./resmsg.json') as RestartData;
     }
     catch{
-        log('resmgs.json not found ya doofus.', 'core', 'warning');
+        logger.log('resmgs.json not found ya doofus.', 'warning');
         return;
     }
     const guild: Guild | null = client.guilds.resolve(ids.guild);
@@ -58,24 +58,24 @@ async function onLogin(){
             if (channel){
                 const msg: Message = await channel.messages.fetch(ids.messageID);
                 if (msg){
-                    msg.react('😄').catch(e => log(e, 'core', 'error'))
+                    msg.react('😄').catch(e => logger.log(e, 'error'))
                     if (ids.userID != config.botAdmins.owner)
                         msg.channel.send('you can\'t drown me bitch');
                 }
                 else
-                    log('message not found in channel: '+channel.name, 'core', 'warning');
+                    logger.log('message not found in channel: '+channel.name, 'warning');
             }
             else
-                log('channel not found in guild: '+guild.name, 'core', 'warning');
+                logger.log('channel not found in guild: '+guild.name, 'warning');
         }
         if (!guild.available){
-            log('guild not available, waiting...', 'core', 'warning');
+            logger.log('guild not available, waiting...', 'warning');
             setTimeout(func, 1000);
         }
         else
             await func();
     }
     else{
-        log('guild not found!\n'+JSON.stringify(ids), 'core', 'error');
+        logger.log('guild not found!\n'+JSON.stringify(ids), 'error');
     }
 }

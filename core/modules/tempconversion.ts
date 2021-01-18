@@ -41,7 +41,7 @@ function convert(message: Message, args: string[], options: string[]) {
 		
     const resultTemp: number = startUnit == resultUnit ? startTemp : conversions[startUnit + resultUnit](startTemp);
     let newResultTemp: string = resultTemp.toFixed(2)
-	message.channel.send(getMessageEmbed('Conversion from ' + startUnit + ' to ' + resultUnit + ':', startTemp + '\u00B0' + startUnit + ' -> ' + newResultTemp + '\u00B0' + resultUnit, ''));
+	message.channel.send(getMessageEmbed('Conversion from ' + startUnit + ' to ' + resultUnit + ':', startTemp + '\u00B0' + startUnit + ' -> ' + newResultTemp + '\u00B0' + resultUnit));
 }
 
 export const cmd = makeCommand('conv', 'Converts the temperature to your desired unit.', '', [], convert, false)

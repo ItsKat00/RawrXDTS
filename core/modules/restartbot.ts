@@ -1,7 +1,8 @@
 import { Message } from "discord.js";
 import fs from "fs";
-import { log } from "../utils/logger";
+import { Logger } from "../utils/logger";
 import { makeCommand } from "../utils/util";
+const logger = new Logger('res');
 async function restart(message:Message, args: string[], options: string[]) {
     const data = {
         guild: message.guild?.id,
@@ -10,7 +11,7 @@ async function restart(message:Message, args: string[], options: string[]) {
         userID: message.author.id
     }
     await message.react('😒');
-    log('user '+message.author.tag+' restarted the bot.', '', 'warning');
+    logger.log('user '+message.author.tag+' restarted the bot.', 'warning');
     fs.writeFileSync('resmsg.json', JSON.stringify(data))
     process.exit(420)
 }

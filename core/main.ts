@@ -6,9 +6,9 @@ let replies: RepliesDef[] = [];
 import { Message } from 'discord.js';
 import fs from 'fs';
 import { config } from './config';
-import { log } from './utils/logger';
+import { Logger } from './utils/logger';
 import { CommandDef } from './utils/util';
-
+const logger = new Logger('core')
 interface RepliesDef {
     text: string,
     response: string
@@ -36,14 +36,14 @@ function addModules() {
     let severety: any = 'info';
     if (errCount > 0)
         severety = 'warning';
-    log('Loaded '+moduleList.length+' modules with '+errCount+' errors', 'core', severety);
+    logger.log('Loaded '+moduleList.length+' modules with '+errCount+' errors', severety);
 }
 
 function addModule(name: string): number {
     const {cmd} = require('./modules/' + name);
-	log('Added module '+name, 'core');
+	logger.log('Added module '+name);
 	if(cmd == null){
-		log('Warning: module '+name+' does not export a command.', 'core', 'warning');
+		logger.log('Warning: module '+name+' does not export a command.', 'warning');
 		return 1;
 	}
 	else if(Array.isArray(cmd)) {
@@ -119,7 +119,7 @@ export function checkCommand(message: Message) {
     if (replyMatch != null)
         message.channel.send(replyMatch.response);
     else{
-        log('unknown command: '+ msg, 'core', 'warning'); // neither a command or reply :(
+        logger.log('unknown command: '+ msg, 'warning'); // neither a command or reply :(
         message.channel.send('what?');
     }
 }
